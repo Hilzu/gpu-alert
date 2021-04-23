@@ -1,0 +1,10 @@
+.git*
+.terraform
+dist
+Dockerfile
+node_modules
+*.hcl
+*.tf
+*.sh
+*.tfstate
+*.tfstate.*

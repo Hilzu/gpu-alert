@@ -2,10 +2,11 @@
 
 import cheerio from "cheerio";
 import got from "got";
+import isMain from "es-main";
 
 const giganttiUrl = new URL(process.env.GIGANTTI_URL);
 const slackWebhookUrl = new URL(process.env.SLACK_WEBHOOK_URL);
-const ignoredSKUs = process.env.IGNORED_SKUS.split(',');
+const ignoredSKUs = process.env.IGNORED_SKUS.split(",");
 
 const scrapeProducts = (htmlText) => {
   const $ = cheerio.load(htmlText);
@@ -40,7 +41,7 @@ const postError = async (err) => {
   await postToSlack({ text: err.stack });
 };
 
-const main = async () => {
+export const main = async () => {
   const htmlText = await got.get(giganttiUrl).text();
   const products = scrapeProducts(htmlText);
   console.log("Found products:", { products });
@@ -50,14 +51,15 @@ const main = async () => {
   if (newProducts.length > 0) await postNewProducts(newProducts);
 };
 
-main().then(
-  () => {
-    console.log("Done");
-  },
-  (err) => {
-    console.error("Unexpected error!", err);
-    postError(err).then(() => {
-      process.exit(1);
+if (isMain(import.meta)) {
+  main()
+    .then(() => {
+      console.log("Done");
+    })
+    .catch((err) => {
+      console.error("Unexpected error!", err);
+      postError(err).then(() => {
+        process.exit(1);
+      });
     });
-  },
-);
+}

@@ -13,7 +13,7 @@ module.exports = {
   rules: {},
   overrides: [
     {
-      files: ["*.cjs"],
+      files: ["*.cjs", "*.js"],
       parserOptions: { sourceType: "script" },
       rules: { strict: ["error", "global"] },
     },

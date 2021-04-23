@@ -10,6 +10,7 @@
     "npm": "^7.11.0"
   },
   "scripts": {
+    "deploy": "./build-lambda.sh && terraform apply",
     "format": "prettier --write .",
     "lint": "eslint --ext mjs,cjs,js .",
     "test": "npm run lint && prettier --check ."

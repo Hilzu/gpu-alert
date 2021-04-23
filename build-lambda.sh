@@ -8,4 +8,4 @@ container_id="$(docker create --entrypoint='sleep 1d' gigantti-gpu-alert-lambda-
 
 docker cp "${container_id}:/opt/app/lambda.zip" dist/
 
-docker rm -f "${container_id}"
+docker rm -f "${container_id}" > /dev/null

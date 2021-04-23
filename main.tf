@@ -70,7 +70,7 @@ resource "aws_lambda_function" "gigantti_fn" {
 
   role    = aws_iam_role.gigantti_execution_role.arn
   runtime = "nodejs14.x"
-  handler = "handler/handler.handler"
+  handler = "lambda/handler.handler"
   timeout = 15
 
   environment {

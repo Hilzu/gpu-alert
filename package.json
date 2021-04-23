@@ -3,7 +3,12 @@
   "version": "1.0.0",
   "description": "Send alert when Gigantti gets certain GPU's in stock",
   "main": "index.mjs",
+  "bin": "index.mjs",
   "type": "module",
+  "engines": {
+    "node": "^v14.16.1",
+    "npm": "^7.11.0"
+  },
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint --ext mjs,cjs,js .",
@@ -24,5 +29,9 @@
     "eslint": "^7.24.0",
     "eslint-config-prettier": "^8.2.0",
     "prettier": "2.2.1"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.6",
+    "got": "^11.8.2"
   }
 }

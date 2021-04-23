@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import cheerio from "cheerio";
 import {
   DynamoDBClient,
@@ -7,7 +5,6 @@ import {
   QueryCommand,
 } from "@aws-sdk/client-dynamodb";
 import got from "got";
-import isMain from "es-main";
 
 const giganttiUrl = new URL(process.env.GIGANTTI_URL);
 const slackWebhookUrl = new URL(process.env.SLACK_WEBHOOK_URL);
@@ -30,7 +27,7 @@ const scrapeProducts = (htmlText) => {
   return products;
 };
 
-const postToSlack = async (payload) => {
+export const postToSlack = async (payload) => {
   await got.post(slackWebhookUrl, {
     json: { username: "gigantti-gpu-alert", ...payload },
     retry: { methods: ["POST"] },
@@ -97,19 +94,7 @@ export const main = async () => {
   }
 };
 
-const postError = async (err) => {
-  await postToSlack({ text: err.stack });
+export const handler = async (event) => {
+  console.log("Received event", event);
+  await main();
 };
-
-if (isMain(import.meta)) {
-  main()
-    .then(() => {
-      console.log("Done");
-    })
-    .catch((err) => {
-      console.error("Unexpected error!", err);
-      postError(err).then(() => {
-        process.exit(1);
-      });
-    });
-}

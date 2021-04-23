@@ -3,18 +3,21 @@
   "version": "1.0.0",
   "description": "Send alert when Gigantti gets certain GPU's in stock",
   "main": "index.mjs",
-  "bin": "index.mjs",
+  "bin": "bin.mjs",
   "type": "module",
   "engines": {
     "node": "^v14.16.1",
     "npm": "^7.11.0"
   },
   "scripts": {
+    "prebuild": "rm -rf dist",
+    "build": "ncc build index.mjs --minify --source-map --target es2020 --out dist",
     "predeploy": "npm run test",
-    "deploy": "./build-lambda.sh && terraform apply",
-    "format": "prettier --write .",
-    "lint": "eslint --ext mjs,cjs,js .",
-    "test": "npm run lint && prettier --check ."
+    "deploy": "npm run build && zip -jr dist/lambda.zip dist/ && terraform apply",
+    "format": "npm run prettier -- --write",
+    "lint": "eslint --ext mjs,cjs,js --ignore-path .gitignore .",
+    "prettier": "prettier --ignore-path .gitignore .",
+    "test": "npm run lint && npm run prettier -- --check"
   },
   "repository": {
     "type": "git",
@@ -28,6 +31,7 @@
   "homepage": "https://github.com/Hilzu/gigantti-gpu-alert#readme",
   "devDependencies": {
     "@types/node": "^14.14.41",
+    "@vercel/ncc": "^0.28.3",
     "eslint": "^7.24.0",
     "eslint-config-prettier": "^8.2.0",
     "prettier": "2.2.1"
@@ -35,7 +39,6 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.13.1",
     "cheerio": "^1.0.0-rc.6",
-    "es-main": "^1.0.2",
     "got": "^11.8.2"
   }
 }

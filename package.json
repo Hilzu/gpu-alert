@@ -10,6 +10,7 @@
     "npm": "^7.11.0"
   },
   "scripts": {
+    "predeploy": "npm run test",
     "deploy": "./build-lambda.sh && terraform apply",
     "format": "prettier --write .",
     "lint": "eslint --ext mjs,cjs,js .",
@@ -32,6 +33,7 @@
     "prettier": "2.2.1"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.13.1",
     "cheerio": "^1.0.0-rc.6",
     "es-main": "^1.0.2",
     "got": "^11.8.2"

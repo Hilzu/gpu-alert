@@ -24,24 +24,21 @@ locals {
   lambda_function_name         = "gigantti-gpu-alert"
 }
 
+data "aws_iam_policy_document" "assume_lambda_role" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+    effect = "Allow"
+  }
+}
+
 resource "aws_iam_role" "gigantti_execution_role" {
   name = "gigantti-gpu-alert-execution-role"
 
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "lambda.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
-}
-EOF
+  assume_role_policy = data.aws_iam_policy_document.assume_lambda_role.json
 
   tags = {
     "Project" = "gigantti-gpu-alert"
@@ -62,6 +59,54 @@ resource "aws_cloudwatch_log_group" "gigantti" {
   }
 }
 
+resource "aws_dynamodb_table" "gigantti" {
+  name      = "gigantti"
+  hash_key  = "sku"
+  range_key = "ts"
+
+  billing_mode = "PAY_PER_REQUEST"
+
+  attribute {
+    name = "sku"
+    type = "S"
+  }
+
+  attribute {
+    name = "ts"
+    type = "S"
+  }
+
+  ttl {
+    enabled        = true
+    attribute_name = "ttl"
+  }
+
+  tags = {
+    "Project" = "gigantti-gpu-alert"
+  }
+}
+
+data "aws_iam_policy_document" "gigantti_use_dynamodb" {
+  statement {
+    actions   = ["dynamodb:Query", "dynamodb:PutItem"]
+    resources = [aws_dynamodb_table.gigantti.arn]
+    effect    = "Allow"
+  }
+}
+
+resource "aws_iam_policy" "gigantti_use_dynamodb" {
+  name   = "gigantti-gpu-alert-use-dynamodb"
+  policy = data.aws_iam_policy_document.gigantti_use_dynamodb.json
+  tags = {
+    "Project" = "gigantti-gpu-alert"
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "gigantti_use_dynamodb" {
+  role       = aws_iam_role.gigantti_execution_role.name
+  policy_arn = aws_iam_policy.gigantti_use_dynamodb.arn
+}
+
 resource "aws_lambda_function" "gigantti_fn" {
   function_name = local.lambda_function_name
 
@@ -78,6 +123,7 @@ resource "aws_lambda_function" "gigantti_fn" {
       "GIGANTTI_URL"      = "https://www.gigantti.fi/INTERSHOP/web/WFS/store-gigantti-Site/fi_FI/-/EUR/ViewStandardCatalog-Browse?CategoryName=fi-tietokonekomponentit-naytonohjaimet&CategoryDomainName=store-gigantti-ProductCatalog&SearchParameter=%26%40QueryTerm%3D*%26ContextCategoryUUID%3DYlOsGQV5I1EAAAFa8VOVoDxg%26discontinued%3D0%26online%3D1&SortingAttribute=ACTdate-desc&select-sort-refine=ACTdate-desc"
       "SLACK_WEBHOOK_URL" = var.slack_webhook_url
       "IGNORED_SKUS"      = "220365,220366,182105,169378,169752,22584"
+      "DYNAMODB_TABLE_ID" = aws_dynamodb_table.gigantti.id
     }
   }
 
@@ -93,7 +139,7 @@ resource "aws_lambda_function" "gigantti_fn" {
 
 resource "aws_cloudwatch_event_rule" "gigantti_schedule" {
   name                = "gigantti-gpu-alert-schedule"
-  schedule_expression = "rate(1 hour)"
+  schedule_expression = "rate(10 minutes)"
 
   tags = {
     "Project" = "gigantti-gpu-alert"

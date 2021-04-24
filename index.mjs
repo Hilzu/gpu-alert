@@ -1,16 +1,12 @@
 import cheerio from "cheerio";
-import {
-  DynamoDBClient,
-  PutItemCommand,
-  QueryCommand,
-} from "@aws-sdk/client-dynamodb";
+import DynamoDB from "aws-sdk/clients/dynamodb";
 import got from "got";
 
 const giganttiUrl = new URL(process.env.GIGANTTI_URL);
 const slackWebhookUrl = new URL(process.env.SLACK_WEBHOOK_URL);
 const ignoredSKUs = process.env.IGNORED_SKUS.split(",");
 const TableName = process.env.DYNAMODB_TABLE_ID;
-const ddbClient = new DynamoDBClient({});
+const docClient = new DynamoDB.DocumentClient();
 
 const scrapeProducts = (htmlText) => {
   const $ = cheerio.load(htmlText);
@@ -42,12 +38,13 @@ const postNewProducts = async (products) => {
 };
 
 const getSKU = async (sku) => {
-  const command = new QueryCommand({
+  const query = {
     TableName,
     KeyConditionExpression: "sku = :sku",
-    ExpressionAttributeValues: { ":sku": { S: sku } },
-  });
-  const res = await ddbClient.send(command);
+    ExpressionAttributeValues: { ":sku": sku },
+  };
+  console.log("Query:", query);
+  const res = await docClient.query(query).promise();
   if (res.Count > 1) throw new Error(`Got multiple items for SKU: ${sku}`);
   return res.Items?.[0];
 };
@@ -56,13 +53,12 @@ const dayInSeconds = 60 * 60 * 24;
 
 const createSKU = async (sku) => {
   const Item = {
-    sku: { S: sku },
-    ts: { S: new Date().toISOString() },
-    ttl: { N: `${Math.floor(Date.now() / 1000 + dayInSeconds)}` },
+    sku,
+    ts: new Date().toISOString(),
+    ttl: Math.floor(Date.now() / 1000 + dayInSeconds),
   };
-  console.log("Writing SKU item", Item);
-  const command = new PutItemCommand({ TableName, Item });
-  await ddbClient.send(command);
+  console.log("Put item:", Item);
+  await docClient.put({ TableName, Item }).promise();
 };
 
 export const main = async () => {
@@ -88,6 +84,7 @@ export const main = async () => {
     return;
   }
 
+  console.log("Posting and marking items as seen", unseenNewProducts);
   postNewProducts(unseenNewProducts);
   for (const unseenNewProduct of unseenNewProducts) {
     await createSKU(unseenNewProduct.sku);

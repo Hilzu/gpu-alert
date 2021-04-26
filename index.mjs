@@ -85,7 +85,7 @@ export const main = async () => {
   }
 
   console.log("Posting and marking items as seen", unseenNewProducts);
-  postNewProducts(unseenNewProducts);
+  await postNewProducts(unseenNewProducts);
   for (const unseenNewProduct of unseenNewProducts) {
     await createSKU(unseenNewProduct.sku);
   }

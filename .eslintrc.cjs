@@ -10,7 +10,16 @@ module.exports = {
     ecmaVersion: 2020,
     sourceType: "module",
   },
-  rules: {},
+  rules: {
+    "no-loss-of-precision": "error",
+    "no-promise-executor-return": "error",
+    "no-template-curly-in-string": "error",
+    "no-unreachable-loop": "error",
+    "no-unsafe-optional-chaining": "error",
+    "no-useless-backreference": "error",
+    "prefer-promise-reject-errors": "error",
+    "require-atomic-updates": "error",
+  },
   overrides: [
     {
       files: ["*.cjs", "*.js"],

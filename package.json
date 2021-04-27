@@ -17,6 +17,7 @@
     "format": "npm run prettier -- --write",
     "lint": "eslint --ext mjs,cjs,js --ignore-path .gitignore .",
     "prettier": "prettier --ignore-path .gitignore .",
+    "start": "node -r dotenv/config bin.mjs",
     "test": "npm run lint && npm run prettier -- --check"
   },
   "repository": {
@@ -32,6 +33,7 @@
   "devDependencies": {
     "@types/node": "^14.14.41",
     "@vercel/ncc": "^0.28.3",
+    "dotenv": "^8.2.0",
     "eslint": "^7.24.0",
     "eslint-config-prettier": "^8.2.0",
     "eslint-plugin-node": "^11.1.0",

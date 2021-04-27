@@ -1,5 +1,5 @@
 import cheerio from "cheerio";
-import DynamoDB from "aws-sdk/clients/dynamodb";
+import DynamoDB from "aws-sdk/clients/dynamodb.js";
 import got from "got";
 
 const giganttiUrl = new URL(process.env.GIGANTTI_URL);

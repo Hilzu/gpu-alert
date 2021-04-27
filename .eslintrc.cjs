@@ -5,7 +5,7 @@ module.exports = {
     es2020: true,
     node: true,
   },
-  extends: ["eslint:recommended", "prettier"],
+  extends: ["eslint:recommended", "plugin:node/recommended", "prettier"],
   parserOptions: {
     ecmaVersion: 2020,
     sourceType: "module",
@@ -17,6 +17,7 @@ module.exports = {
     "no-unreachable-loop": "error",
     "no-unsafe-optional-chaining": "error",
     "no-useless-backreference": "error",
+    "node/file-extension-in-import": "error",
     "prefer-promise-reject-errors": "error",
     "require-atomic-updates": "error",
   },

@@ -36,7 +36,7 @@ export const postToSlack = async (payload) => {
 
 const postNewProducts = async (products) => {
   const formattedProducts = products
-    .map((p) => `<${p.url}|${p.name}>  ${p.price} €`)
+    .map((p) => `<${p.url}|${p.name}>  ${p.price} € (sku: ${p.sku})`)
     .join("\n");
   await postToSlack({ text: `Found new GPUs!\n${formattedProducts}` });
 };

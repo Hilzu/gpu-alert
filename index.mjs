@@ -16,7 +16,10 @@ const scrapeProducts = (htmlText) => {
       name: $(".product-name", e).text().trim(),
       sku: $(".product-number.sku", e).text().trim(),
       url: $("a.product-name", e).attr("href"),
-      price: ($(".product-price", e).contents().get(0)?.nodeValue || "-").trim(),
+      price: (
+        $(".product-price", e).contents().get(0)?.nodeValue || "-"
+      ).trim(),
+      canPurchase: $(".add-to-basket-ajax", e).length != 0,
     };
   });
 
@@ -52,11 +55,12 @@ const getSKU = async (sku) => {
 
 const dayInSeconds = 60 * 60 * 24;
 
-const createSKU = async (sku) => {
+const createSKU = async (product) => {
   const Item = {
-    sku,
+    sku: product.sku,
     ts: new Date().toISOString(),
     ttl: Math.floor(Date.now() / 1000 + dayInSeconds),
+    name: product.name,
   };
   console.log("Put item:", Item);
   await docClient.put({ TableName, Item }).promise();
@@ -77,8 +81,8 @@ export const main = async () => {
   let unseenNewProducts = [];
   for (const product of newProducts) {
     const sku = await getSKU(product.sku);
-    if (sku) console.log("Product seen previously", sku);
-    else unseenNewProducts.push(product);
+    if (sku) console.log("Product seen previously:", sku);
+    else if (product.canPurchase) unseenNewProducts.push(product);
   }
   if (unseenNewProducts.length === 0) {
     console.log("No new unseen products");
@@ -88,7 +92,7 @@ export const main = async () => {
   console.log("Posting and marking items as seen", unseenNewProducts);
   await postNewProducts(unseenNewProducts);
   for (const unseenNewProduct of unseenNewProducts) {
-    await createSKU(unseenNewProduct.sku);
+    await createSKU(unseenNewProduct);
   }
 };
 

@@ -16,6 +16,7 @@ const scrapeProducts = (htmlText) => {
       name: $(".product-name", e).text().trim(),
       sku: $(".product-number.sku", e).text().trim(),
       url: $("a.product-name", e).attr("href"),
+      price: ($(".product-price", e).contents().get(0)?.nodeValue || "-").trim(),
     };
   });
 
@@ -32,7 +33,7 @@ export const postToSlack = async (payload) => {
 
 const postNewProducts = async (products) => {
   const formattedProducts = products
-    .map((p) => `<${p.url}|${p.name}>`)
+    .map((p) => `<${p.url}|${p.name}>  ${p.price} €`)
     .join("\n");
   await postToSlack({ text: `Found new GPUs!\n${formattedProducts}` });
 };

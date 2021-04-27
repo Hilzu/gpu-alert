@@ -140,7 +140,7 @@ resource "aws_lambda_function" "gigantti_fn" {
 
 resource "aws_cloudwatch_event_rule" "gigantti_schedule" {
   name                = "gigantti-gpu-alert-schedule"
-  schedule_expression = "rate(10 minutes)"
+  schedule_expression = "rate(1 minute)"
 
   tags = {
     "Project" = "gigantti-gpu-alert"

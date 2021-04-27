@@ -4,7 +4,7 @@ import got from "got";
 
 const giganttiUrl = new URL(process.env.GIGANTTI_URL);
 const slackWebhookUrl = new URL(process.env.SLACK_WEBHOOK_URL);
-const ignoredSKUs = process.env.IGNORED_SKUS.split(",");
+const ignoredSKUs = new Set(process.env.IGNORED_SKUS.split(","));
 const TableName = process.env.DYNAMODB_TABLE_ID;
 const docClient = new DynamoDB.DocumentClient();
 
@@ -66,7 +66,7 @@ export const main = async () => {
   const products = scrapeProducts(htmlText);
   console.log("Found products:", products);
 
-  const newProducts = products.filter((p) => !ignoredSKUs.includes(p.sku));
+  const newProducts = products.filter((p) => !ignoredSKUs.has(p.sku));
   console.log("Found new products:", newProducts);
   if (newProducts.length === 0) {
     console.log("No new products");

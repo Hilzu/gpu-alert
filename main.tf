@@ -123,7 +123,7 @@ resource "aws_lambda_function" "gigantti_fn" {
     variables = {
       "GIGANTTI_URL"      = "https://www.gigantti.fi/INTERSHOP/web/WFS/store-gigantti-Site/fi_FI/-/EUR/ViewStandardCatalog-Browse?CategoryName=fi-tietokonekomponentit-naytonohjaimet&CategoryDomainName=store-gigantti-ProductCatalog&SearchParameter=%26%40QueryTerm%3D*%26ContextCategoryUUID%3DYlOsGQV5I1EAAAFa8VOVoDxg%26discontinued%3D0%26online%3D1&SortingAttribute=ACTdate-desc&select-sort-refine=ACTdate-desc"
       "SLACK_WEBHOOK_URL" = var.slack_webhook_url
-      "IGNORED_SKUS"      = "220365,220366,182105,169378,169752,22584"
+      "IGNORED_SKUS"      = "109531,169378,169752,178113,182015,182105,220365,220366,22584,304613,305976,71335,79922"
       "DYNAMODB_TABLE_ID" = aws_dynamodb_table.gigantti.id
     }
   }

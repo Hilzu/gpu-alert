@@ -1,10 +1,6 @@
 #!/usr/bin/env node
 
-import { postToSlack, main } from "./index.mjs";
-
-const postError = async (err) => {
-  await postToSlack({ text: err.stack });
-};
+import { main } from "./index.mjs";
 
 main()
   .then(() => {
@@ -12,7 +8,5 @@ main()
   })
   .catch((err) => {
     console.error("Unexpected error!", err);
-    postError(err).then(() => {
-      process.exitCode = 1;
-    });
+    process.exitCode = 1;
   });

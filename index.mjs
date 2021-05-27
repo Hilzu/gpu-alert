@@ -27,7 +27,7 @@ const scrapeProducts = (htmlText) => {
   return products;
 };
 
-export const postToSlack = async (payload) => {
+const postToSlack = async (payload) => {
   await got.post(slackWebhookUrl, {
     json: { username: "gigantti-gpu-alert", ...payload },
     retry: { methods: ["POST"] },

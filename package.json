@@ -13,12 +13,15 @@
     "prebuild": "rm -rf dist",
     "build": "ncc build index.mjs --minify --source-map --target es2020 --external aws-sdk --out dist",
     "predeploy": "npm run test",
-    "deploy": "npm run build && zip -jr dist/lambda.zip dist/ && terraform apply",
-    "format": "npm run prettier -- --write",
+    "deploy": "npm run build && npm run package && npm run deploy:tf",
+    "deploy:tf": "terraform apply",
+    "format": "npm run prettier -- --write && npm run format:tf",
+    "format:tf": "terraform fmt",
     "lint": "eslint --ext mjs,cjs,js --ignore-path .gitignore .",
+    "package": "zip -jr dist/lambda.zip dist/",
     "prettier": "prettier --ignore-path .gitignore .",
     "start": "node -r dotenv/config bin.mjs",
-    "test": "npm run lint && npm run prettier -- --check"
+    "test": "npm run lint && npm run prettier -- --check && npm run format:tf -- -check"
   },
   "repository": {
     "type": "git",

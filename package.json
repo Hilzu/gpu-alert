@@ -2,8 +2,8 @@
   "name": "gigantti-gpu-alert",
   "version": "1.0.0",
   "description": "Send alert when Gigantti gets certain GPU's in stock",
-  "main": "index.mjs",
-  "bin": "bin.mjs",
+  "main": "src/index.mjs",
+  "bin": "src/bin.mjs",
   "type": "module",
   "engines": {
     "node": "^v14.16.1",
@@ -11,7 +11,7 @@
   },
   "scripts": {
     "prebuild": "rm -rf dist",
-    "build": "ncc build index.mjs --minify --source-map --target es2020 --external aws-sdk --out dist",
+    "build": "ncc build src/index.mjs --minify --source-map --target es2020 --external aws-sdk --out dist",
     "predeploy": "npm run test",
     "deploy": "npm run build && npm run package && npm run deploy:tf",
     "deploy:tf": "terraform apply",
@@ -20,7 +20,7 @@
     "lint": "eslint --ext mjs,cjs,js --ignore-path .gitignore .",
     "package": "zip -jr dist/lambda.zip dist/",
     "prettier": "prettier --ignore-path .gitignore .",
-    "start": "node -r dotenv/config bin.mjs",
+    "start": "node -r dotenv/config src/bin.mjs",
     "test": "npm run lint && npm run prettier -- --check && npm run format:tf -- -check"
   },
   "repository": {
@@ -34,17 +34,17 @@
   },
   "homepage": "https://github.com/Hilzu/gigantti-gpu-alert#readme",
   "devDependencies": {
-    "@types/node": "^14.14.41",
-    "@vercel/ncc": "^0.28.3",
-    "dotenv": "^8.2.0",
-    "eslint": "^7.24.0",
-    "eslint-config-prettier": "^8.2.0",
+    "@types/node": "^15.12.5",
+    "@vercel/ncc": "^0.28.6",
+    "dotenv": "^10.0.0",
+    "eslint": "^7.29.0",
+    "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-node": "^11.1.0",
-    "prettier": "2.2.1"
+    "prettier": "2.3.2"
   },
   "dependencies": {
-    "aws-sdk": "^2.892.0",
-    "cheerio": "^1.0.0-rc.6",
+    "aws-sdk": "^2.937.0",
+    "cheerio": "^1.0.0-rc.10",
     "got": "^11.8.2"
   }
 }

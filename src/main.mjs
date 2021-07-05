@@ -1,5 +1,6 @@
 import { scrapeProducts as scrapeGiganttiProducts } from "./gigantti.mjs";
 import { scrapeProducts as scrapeJimmsProducts } from "./jimms.mjs";
+import { scrapeProducts as scrapeVKProducts } from "./verkkokauppa.mjs";
 import { postToSlack } from "./slack.mjs";
 import { getSKUs, createSKU } from "./dynamodb.mjs";
 
@@ -12,7 +13,11 @@ const postNewProducts = async (products) => {
 
 export const main = async () => {
   const products = (
-    await Promise.all([scrapeGiganttiProducts(), scrapeJimmsProducts()])
+    await Promise.all([
+      scrapeGiganttiProducts(),
+      scrapeJimmsProducts(),
+      scrapeVKProducts(),
+    ])
   ).flat();
   console.log("Found products:", products);
 

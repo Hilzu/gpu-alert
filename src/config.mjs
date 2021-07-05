@@ -5,3 +5,5 @@ export const jimmsURL = new URL(process.env.JIMMS_URL);
 export const slackWebhookURL = new URL(process.env.SLACK_WEBHOOK_URL);
 
 export const dynamoDBTableId = process.env.DYNAMODB_TABLE_ID;
+
+export const verkkokauppaURL = new URL(process.env.VERKKOKAUPPA_URL);

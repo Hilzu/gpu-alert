@@ -84,7 +84,7 @@ resource "aws_dynamodb_table" "gigantti" {
 
 data "aws_iam_policy_document" "gigantti_use_dynamodb" {
   statement {
-    actions   = ["dynamodb:Query", "dynamodb:PutItem"]
+    actions   = ["dynamodb:Query", "dynamodb:PutItem", "dynamodb:BatchGetItem"]
     resources = [aws_dynamodb_table.gigantti.arn]
     effect    = "Allow"
   }
@@ -119,6 +119,7 @@ resource "aws_lambda_function" "gigantti_fn" {
     variables = {
       "GIGANTTI_URL"      = "https://www.gigantti.fi/INTERSHOP/web/WFS/store-gigantti-Site/fi_FI/-/EUR/ViewStandardCatalog-Browse?CategoryName=fi-tietokonekomponentit-naytonohjaimet&CategoryDomainName=store-gigantti-ProductCatalog&SearchParameter=%26%40QueryTerm%3D*%26ContextCategoryUUID%3DYlOsGQV5I1EAAAFa8VOVoDxg%26discontinued%3D0%26online%3D1&SortingAttribute=ACTdate-desc&select-sort-refine=ACTdate-desc"
       "JIMMS_URL"         = "https://www.jimms.fi/fi/Product/List/000-1U3/komponentit--naytonohjaimet--geforce-rtx-pelaamiseen--rtx-3080-ti?i=100&ob=5"
+      "VERKKOKAUPPA_URL"  = "https://web-api.service.verkkokauppa.com/search?private=true&rcs=eF5jYSlN9khMSbOwMDJP001KSk7VNUm0NNJNNTEw1TUzNE0xNU4xNk9NsuTKLSvJTOGztLDUNdQ1BACiIA6p&sessionId=null&pageNo=0&pageSize=48&sort=price:asc&lang=fi&context=category_page&contextFilter=12069c"
       "SLACK_WEBHOOK_URL" = var.slack_webhook_url
       "DYNAMODB_TABLE_ID" = aws_dynamodb_table.gigantti.id
     }

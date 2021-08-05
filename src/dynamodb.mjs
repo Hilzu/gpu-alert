@@ -7,7 +7,7 @@ export const getSKUs = async (skus) => {
   const params = {
     RequestItems: { [TableName]: { Keys: skus.map((sku) => ({ sku })) } },
   };
-  console.log("params:", params);
+  console.log("params:", JSON.stringify(params, null, 2));
   const res = await docClient.batchGet(params).promise();
   return res.Responses[TableName];
 };

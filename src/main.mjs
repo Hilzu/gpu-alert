@@ -12,13 +12,21 @@ const postNewProducts = async (products) => {
 };
 
 export const main = async () => {
-  const products = (
-    await Promise.all([
-      scrapeGiganttiProducts(),
-      scrapeJimmsProducts(),
-      scrapeVKProducts(),
-    ])
-  ).flat();
+  const scrapers = await Promise.allSettled([
+    scrapeGiganttiProducts(),
+    scrapeJimmsProducts(),
+    scrapeVKProducts(),
+  ]);
+  const products = [];
+  for (const result of scrapers) {
+    if (result.status === "rejected") {
+      console.error("A scraper failed!", result.reason);
+    } else if (result.status === "fulfilled") {
+      products.push(...result.value);
+    } else {
+      console.error("We shouldn't be here", result);
+    }
+  }
   console.log("Found products:", products);
 
   const filteredProducts = products.filter(
@@ -33,7 +41,7 @@ export const main = async () => {
   const seenProducts = await getSKUs(filteredProducts.map((p) => p.sku));
   const seenSKUs = new Set(seenProducts.map((p) => p.sku));
   const unseenNewProducts = filteredProducts.filter(
-    (p) => !seenSKUs.includes(p.sku),
+    (p) => !seenSKUs.has(p.sku),
   );
   if (unseenNewProducts.length === 0) {
     console.log("No new unseen products");

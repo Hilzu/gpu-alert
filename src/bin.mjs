@@ -8,5 +8,7 @@ main()
   })
   .catch((err) => {
     console.error("Unexpected error!", err);
+    if (err.options) console.log(err.options);
+    if (err.response?.body) console.log(err.response.body);
     process.exitCode = 1;
   });

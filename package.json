@@ -1,7 +1,7 @@
 {
-  "name": "gigantti-gpu-alert",
+  "name": "gpu-alert",
   "version": "1.0.0",
-  "description": "Send alert when Gigantti gets certain GPU's in stock",
+  "description": "Send alert when a shop gets certain GPU's in stock with good price",
   "main": "src/index.mjs",
   "bin": "src/bin.mjs",
   "type": "module",
@@ -25,14 +25,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Hilzu/gigantti-gpu-alert.git"
+    "url": "git+https://github.com/Hilzu/gpu-alert.git"
   },
   "author": "github@me.hilzu.moe",
   "license": "UNLICENSED",
   "bugs": {
-    "url": "https://github.com/Hilzu/gigantti-gpu-alert/issues"
+    "url": "https://github.com/Hilzu/gpu-alert/issues"
   },
-  "homepage": "https://github.com/Hilzu/gigantti-gpu-alert#readme",
+  "homepage": "https://github.com/Hilzu/gpu-alert#readme",
   "devDependencies": {
     "@types/node": "^15.12.5",
     "@vercel/ncc": "^0.28.6",
